@@ -13,7 +13,7 @@ FORCE_SET_LOGGING <- function(threshold="INFO", logging=FALSE) {
   flog.appender(force_log_handler(), name="force")
   flog.threshold(threshold_type, name="force")
   layout <- layout.format('[~l][~t][~n.~f] ~m')
-  flog.layout(layout)
+  flog.layout(layout, name="force")
 }
 
 force_log_handler <- function()
