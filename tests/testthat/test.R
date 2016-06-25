@@ -13,5 +13,4 @@ test_that("learn)", {
       print(sprintf("Catched: %s", e$message))
     }
   )
-  print(FORCE_GET_LOG())
 })

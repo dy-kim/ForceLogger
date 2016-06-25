@@ -1,7 +1,6 @@
 import(futile.logger)
 
 export(FORCE_SET_LOGGING)
-export(FORCE_GET_LOG)
 export(FORCE_TRACE)
 export(FORCE_DEBUG)
 export(FORCE_INFO)
