@@ -1,5 +1,17 @@
 LOGGER_NAME <- "force"
 
+#' Set the threshold for FORCE logger & Set the file path to write log
+#'
+#' The \code{threshold} affects the visibility of FORCE loggers.
+#'
+#' @param threshold A character.
+#' One of \code{"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"}.
+#' Default is \code{"FATAL"}.
+#'
+#' @param logFilePath A file path. Default is \code{NULL}. If it is \code{NULL}, a log file is not written.
+#'
+#' @usage SETUP_FORCE_LOGGER(threshold = "INFO", logFilePath = "test.log")
+#'
 #' @export
 SETUP_FORCE_LOGGER <- function(threshold = "FATAL",
                                logFilePath = getOption("log.file.path")) {
