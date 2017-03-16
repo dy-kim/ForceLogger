@@ -1,71 +1,63 @@
+LOGGER_NAME <- "force"
+
 #' @export
-FORCE_SET_LOGGING <-
-  function(threshold = c("INFO", "TRACE", "DEBUG", "WARN", "ERROR", "FATAL"),
-           logging = FALSE) {
-    if (missing(threshold))
-      threshold_type <- "INFO"
+SETUP_FORCE_LOGGER <- function(threshold = "FATAL",
+                               logFilePath = getOption("log.file.path")) {
+  threshold <-
+    match.arg(toupper(threshold),
+              choices = c("TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"))
+  FORCE_THRESHOLD(threshold)
 
-    threshold <- match.arg(threshold)
-    threshold_type <-
-      switch(
-        EXPR = threshold,
-        TRACE = TRACE,
-        DEBUG = DEBUG,
-        INFO = INFO,
-        WARN = WARN,
-        ERROR = ERROR,
-        FATAL = FATAL
-      )
-
-    assign("force_log_logging_", logging, envir = .GlobalEnv)
-    flog.appender(force_log_handler(), name = "force")
-    flog.threshold(threshold_type, name = "force")
-    layout <- layout.format("[~l][~t][~n.~f] ~m")
-    flog.layout(layout, name = "force")
+  if (!is.null(logFilePath)) {
+    FORCE_FILE_APPENDER(logFilePath)
+  } else {
+    FORCE_NULL_APPENDER()
   }
 
+  invisible(FORCE_LAYOUT())
+}
+
 #' @export
-force_log_handler <- function() {
-  function(line) {
-    if (force_log_logging_) {
-      cat(line, sep = "", file = stderr())
+FORCE_THRESHOLD <- function(threshold) {
+  thresholdType <-
+    switch(
+      EXPR = threshold,
+      TRACE = TRACE,
+      DEBUG = DEBUG,
+      INFO = INFO,
+      WARN = WARN,
+      ERROR = ERROR,
+      FATAL = FATAL
+    )
+
+  flog.threshold(thresholdType)
+  flog.threshold(TRACE, name = LOGGER_NAME)
+}
+
+#' @export
+FORCE_FILE_APPENDER <-
+  function(logFilePath = getOption("log.file.path")) {
+    if (is.null(logFilePath)) {
+      stop("invalid connection; argument 'logFilePath' is NULL")
     }
+
+    FORCE_APPENDER(appender.file(logFilePath))
   }
+
+FORCE_APPENDER <- function(x) {
+  flog.appender(x, name = LOGGER_NAME)
 }
 
-#' @export
-FORCE_TRACE <- function(fmt, ...) {
-  msg <- sprintf(fmt, ...)
-  flog.trace(msg, name = "force")
+FORCE_NULL_APPENDER <- function() {
+  FORCE_APPENDER(function(line) {
+    invisible(NULL)
+  })
 }
 
-#' @export
-FORCE_DEBUG <- function(fmt, ...) {
-  msg <- sprintf(fmt, ...)
-  flog.debug(msg, name = "force")
-}
+FORCE_LAYOUT <- function() {
+  customizedJsonLayout <-
+    layout.format(format = '{"level":"~l","timestamp":"~t","namespace":"~n","function":"~f","message":"~m"}',
+                  datetime.fmt = "%Y-%m-%dT%H:%M:%S%z")
 
-#' @export
-FORCE_INFO <- function(fmt, ...) {
-  msg <- sprintf(fmt, ...)
-  flog.info(msg, name = "force")
-}
-
-#' @export
-FORCE_WARN <- function(fmt, ...) {
-  msg <- sprintf(fmt, ...)
-  flog.warn(msg, name = "force")
-}
-
-#' @export
-FORCE_ERROR <- function(fmt, ...) {
-  msg <- sprintf(fmt, ...)
-  flog.error(msg, name = "force")
-}
-
-#' @export
-FORCE_FATAL <- function(fmt, ...) {
-  msg <- sprintf(fmt, ...)
-  flog.fatal(msg, name = "force")
-  stop(msg)
+  flog.layout(customizedJsonLayout, name = LOGGER_NAME)
 }

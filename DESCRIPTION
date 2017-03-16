@@ -1,16 +1,17 @@
 Package: ForceLogger
 Type: Package
 Title: ForceLogger
-Version: 0.0.2
-Authors@R: c(person(given = "Jaepil", family = "Choi", rol = c("aut", "cre"), email = "jeffry82@encoredtech.com"),
-    person(given = "Daeyoung", family = "Kim", role  = "aut", email = "dykim22@encoredtech.com"))
+Version: 0.1.0
+Authors@R: c(
+    person("Jaepil", "Choi", rol = c("aut", "cre"), email = "jeffry82@encoredtech.com"),
+    person("Daeyoung", "Kim", role  = "aut", email = "dykim22@encoredtech.com"))
 Maintainer: Jaepil Choi <jeffry82@encoredtech.com>
 Description: Logger of Encored's Force system.
 Depends:
     R (>= 3.3.0)
 Imports:
-    futile.logger (>= 1.4.1)
-Remotes: github::cran/futile.logger@1.4.1
+    futile.logger (>= 1.4.1),
+    jsonlite (>= 1.3)
 LazyData: true
 License: LGPL-3
 Suggests:
